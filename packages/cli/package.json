@@ -1,0 +1,17 @@
+{
+  "name": "@moltstream/cli",
+  "version": "0.4.0",
+  "description": "CLI tooling — molt init, molt dev, molt stream",
+  "bin": { "molt": "dist/cli.js" },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": { "build": "tsc", "dev": "tsc --watch", "clean": "rm -rf dist" },
+  "dependencies": {
+    "@moltstream/core": "workspace:*",
+    "@moltstream/adapters": "workspace:*",
+    "@moltstream/orchestrator": "workspace:*",
+    "@moltstream/policy": "workspace:*",
+    "commander": "^13.0.0"
+  },
+  "license": "MIT"
+}

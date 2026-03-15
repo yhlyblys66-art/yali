@@ -1,0 +1,28 @@
+{
+  "name": "moltstream",
+  "private": true,
+  "version": "0.4.0",
+  "description": "Agent-native streaming infrastructure",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "Tyler Skaggs <skaggsxyz@users.noreply.github.com>",
+  "license": "MIT"
+}

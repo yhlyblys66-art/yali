@@ -1,0 +1,10 @@
+{
+  "name": "@moltstream/bridge",
+  "version": "0.4.0",
+  "description": "Action serialization, priority queuing, rollback support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": { "build": "tsc", "dev": "tsc --watch", "test": "vitest run", "clean": "rm -rf dist" },
+  "dependencies": { "@moltstream/core": "workspace:*" },
+  "license": "MIT"
+}
