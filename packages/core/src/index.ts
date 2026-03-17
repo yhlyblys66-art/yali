@@ -13,3 +13,13 @@ export {
   LLMEngine,
   type Rule,
 } from './reasoning.js';
+export {
+  VectorMemory,
+  type VectorEntry,
+  type SearchResult,
+  type SearchFilter,
+  type EmbeddingProvider,
+  type VectorBackend,
+  InMemoryVectorBackend,
+  HashEmbeddingProvider,
+} from './vector-memory.js';
