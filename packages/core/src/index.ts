@@ -44,3 +44,10 @@ export {
   type MetricValue,
   type MetricType,
 } from './metrics.js';
+export {
+  TokenBucket,
+  SlidingWindow,
+  RateLimiter,
+  KeyedRateLimiter,
+  type RateLimitConfig,
+} from './rate-limiter.js';
