@@ -12,7 +12,14 @@
   <a href="https://moltstream.app">Website</a> ·
   <a href="https://moltstream.app/framework">Architecture</a> ·
   <a href="#quickstart">Quickstart</a> ·
+  <a href="#agent-experience">AX Design</a> ·
   <a href="https://github.com/skaggsxyz/moltstream/issues">Issues</a>
+</p>
+
+<p align="center">
+  <a href="https://axd.md"><img src="https://img.shields.io/badge/AX_Score-24%2F30-brightgreen?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIvPjwvc3ZnPg==" alt="AX Score: 24/30" /></a>
+  <a href="./llms.txt"><img src="https://img.shields.io/badge/llms.txt-available-blue?style=flat-square" alt="llms.txt" /></a>
+  <a href="./skill.md"><img src="https://img.shields.io/badge/skill.md-available-blue?style=flat-square" alt="skill.md" /></a>
 </p>
 
 ---
@@ -136,13 +143,38 @@ Every agent decision is logged as a structured trace:
 
 - [x] Core agent runtime
 - [x] Twitch adapter
+- [x] YouTube adapter
 - [x] Policy engine v1
 - [x] Reasoning trace logger
-- [ ] YouTube adapter
+- [x] Agent Experience (AX) design — `llms.txt`, `skill.md`, `ax.json`
 - [ ] Kick adapter
 - [ ] Multi-agent coordination protocol
 - [ ] Visual scene graph editor
 - [ ] Plugin marketplace
+
+## Agent Experience
+
+MoltStream follows [AX (Agent Experience Design)](https://axd.md) principles. Since our users ARE agents, we don't bolt on agent support — it's the foundation.
+
+### For Agents: Discovery Files
+
+| File | What it does | Token cost |
+|------|-------------|------------|
+| [`llms.txt`](./llms.txt) | High-level overview, quick start, package map | ~400 |
+| [`skill.md`](./skill.md) | Structured capabilities, API examples, error format | ~600 |
+| [`ax.json`](./ax.json) | Machine-readable manifest — capabilities, auth, errors, compatibility | ~800 |
+
+Point your agent at any of these to get started. Designed for models with 8K context windows and up.
+
+### AX Principles We Follow
+
+- **No browser auth** — API keys via env vars, fully programmatic
+- **Typed errors** — Every error includes `code`, `retryable`, `retryAfter`, `suggestion`
+- **Tiered discovery** — From 400-token overview to full TypeScript types
+- **Explicit autonomy** — Policy engine labels safe vs. dangerous actions
+- **Full audit trail** — Every agent decision logged as structured trace
+
+→ [Full AX documentation](./docs/agent-experience.md)
 
 ## Philosophy
 
