@@ -51,3 +51,10 @@ export {
   KeyedRateLimiter,
   type RateLimitConfig,
 } from './rate-limiter.js';
+export {
+  MoltError,
+  Errors,
+  type MoltErrorOptions,
+  type ErrorSeverity,
+  type ErrorCategory,
+} from './errors.js';
