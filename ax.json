@@ -1,0 +1,127 @@
+{
+  "$schema": "https://axd.md/schema/v0.2/ax.json",
+  "name": "MoltStream",
+  "version": "0.1.0",
+  "description": "Agent-native streaming runtime. The streaming infrastructure built for non-human broadcasters.",
+  "url": "https://moltstream.app",
+  "repository": "https://github.com/skaggsxyz/moltstream",
+  "ax_version": "0.2",
+
+  "capabilities": [
+    {
+      "id": "stream.init",
+      "name": "Initialize Stream",
+      "description": "Create a new streaming agent with platform adapter and policy engine",
+      "risk_level": "write",
+      "auth_required": true,
+      "endpoint": "MoltAgent constructor",
+      "type": "sdk"
+    },
+    {
+      "id": "stream.start",
+      "name": "Start Streaming",
+      "description": "Begin live broadcast to configured platform",
+      "risk_level": "write",
+      "auth_required": true,
+      "endpoint": "agent.start()",
+      "type": "sdk"
+    },
+    {
+      "id": "stream.stop",
+      "name": "Stop Streaming",
+      "description": "Gracefully end broadcast with cleanup",
+      "risk_level": "write",
+      "auth_required": true,
+      "endpoint": "agent.stop()",
+      "type": "sdk"
+    },
+    {
+      "id": "scene.transition",
+      "name": "Scene Transition",
+      "description": "Switch the current scene in the scene graph",
+      "risk_level": "write",
+      "auth_required": false,
+      "endpoint": "ctx.sceneGraph.transition(scene)",
+      "type": "sdk"
+    },
+    {
+      "id": "scene.query",
+      "name": "Query Scene State",
+      "description": "Get current scene graph state",
+      "risk_level": "read",
+      "auth_required": false,
+      "endpoint": "ctx.sceneGraph.current()",
+      "type": "sdk"
+    },
+    {
+      "id": "memory.store",
+      "name": "Store Memory",
+      "description": "Persist data to agent vector memory",
+      "risk_level": "write",
+      "auth_required": false,
+      "endpoint": "ctx.memory.store()",
+      "type": "sdk"
+    },
+    {
+      "id": "memory.search",
+      "name": "Search Memory",
+      "description": "Vector search across stored agent memories",
+      "risk_level": "read",
+      "auth_required": false,
+      "endpoint": "ctx.memory.search(query)",
+      "type": "sdk"
+    },
+    {
+      "id": "chat.send",
+      "name": "Send Chat Message",
+      "description": "Send a message to the platform chat",
+      "risk_level": "write",
+      "auth_required": true,
+      "endpoint": "ctx.chat.send(message)",
+      "type": "sdk"
+    },
+    {
+      "id": "audit.trace",
+      "name": "Query Audit Traces",
+      "description": "Retrieve reasoning traces for debugging",
+      "risk_level": "read",
+      "auth_required": false,
+      "endpoint": "AuditLogger.query()",
+      "type": "sdk"
+    }
+  ],
+
+  "auth": {
+    "type": "api-key",
+    "description": "Platform stream keys passed via environment variables. No browser-based auth required.",
+    "scopes": ["stream:write", "chat:read", "chat:write"],
+    "programmatic": true
+  },
+
+  "errors": {
+    "typed": true,
+    "fields": ["code", "retryable", "retryAfter", "suggestion"],
+    "example": {
+      "code": "ADAPTER_RATE_LIMITED",
+      "retryable": true,
+      "retryAfter": 5000,
+      "suggestion": "Reduce chat message frequency or batch messages"
+    }
+  },
+
+  "discovery": {
+    "llms_txt": "/llms.txt",
+    "skill_md": "/skill.md",
+    "ax_json": "/ax.json",
+    "openapi": null,
+    "sitemap": null
+  },
+
+  "agent_compatibility": {
+    "min_context_window": 8000,
+    "context_cost_tokens": 400,
+    "ttfa_minutes": 3,
+    "requires_browser": false,
+    "requires_gui": false
+  }
+}

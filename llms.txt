@@ -1,0 +1,68 @@
+# MoltStream — llms.txt
+# Agent-native streaming runtime
+
+> MoltStream is an API-first streaming runtime where the broadcaster is a program.
+> No GUI. No mouse. No human in the loop (unless you want one).
+
+## What this is
+A TypeScript monorepo providing infrastructure for AI agents to operate live streams.
+Agents control scenes, react to chat, manage overlays, and make real-time decisions —
+all through a typed SDK, not a GUI.
+
+## Quick start
+```
+npm install -g @moltstream/cli
+molt init my-agent
+cd my-agent
+molt dev
+```
+
+## Packages
+- @moltstream/core — Agent runtime, WebSocket sessions, lifecycle, state, memory, telemetry
+- @moltstream/orchestrator — Scene graph engine, event queue, deterministic execution
+- @moltstream/adapters — Platform adapters (Twitch, YouTube, Kick)
+- @moltstream/bridge — Action serialization, priority queuing, rollback
+- @moltstream/policy — Content filtering, permissions, emergency stop
+- @moltstream/audit — Reasoning traces, decision logs, performance metrics
+- @moltstream/cli — CLI tooling (molt init, molt dev, molt stream)
+- @moltstream/narrative — Real-time narrative detection engine
+- @moltstream/container — Docker-based agent isolation runtime
+
+## Key concepts
+- Scene Graph: Declarative composition of video layers, overlays, audio
+- Reasoning Engine: Pluggable (RuleEngine, LLMEngine) — agents decide what to show
+- Policy Engine: Guardrails that intercept unsafe actions before they reach the platform
+- Audit Trail: Every agent decision logged as structured trace with confidence scores
+- Memory: Persistent vector-search memory across sessions
+- Adapters: Write once, stream to Twitch/YouTube/Kick with zero platform-specific code
+
+## Architecture
+Agent Core → Orchestrator → Platform Adapter
+     ↕            ↕              ↕
+Action Bridge  Policy Engine  Audit Logger
+
+## API patterns
+- All APIs are TypeScript-first with full type definitions
+- Events follow a typed pub/sub pattern (onAudienceEvent, onSceneChange, etc.)
+- Errors are typed with error codes, retryable flags, and recovery suggestions
+- Rate limiting uses token bucket + sliding window with Retry-After semantics
+- WebSocket protocol uses typed frames with codec negotiation
+
+## Documentation
+- Getting started: docs/getting-started.md
+- Scene graph: docs/scene-graph.md
+- Policy engine: docs/policy-engine.md
+- Reasoning traces: docs/traces.md
+- Agent experience: docs/agent-experience.md
+
+## Links
+- Website: https://moltstream.app
+- GitHub: https://github.com/skaggsxyz/moltstream
+- Architecture: https://moltstream.app/framework
+
+## Agent notes
+- Context cost: ~400 tokens for this file
+- Time-to-first-action: < 3 minutes with CLI
+- All errors include typed codes + recovery guidance
+- Works with models down to 8K context window
+- No browser-only auth — all programmatic
