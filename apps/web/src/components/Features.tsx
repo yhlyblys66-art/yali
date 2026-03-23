@@ -1,72 +1,59 @@
 const features = [
   {
-    icon: "⬡",
-    title: "MULTI-PLATFORM",
-    desc: "Simultaneous streaming to Kick, YouTube, and Twitch from a single autonomous agent. One agent, all platforms.",
+    name: "Multi-Agent Streams",
+    desc: "Run multiple AI agents on a single stream — each with unique personality, role, and interaction patterns. Collaborative or adversarial.",
+    code: "SYS_001",
   },
   {
-    icon: "◎",
-    title: "CONSCIOUSNESS VIZ",
-    desc: "Real-time browser-based visualization of the AI agent's internal state, decision flows, and emotional processing.",
+    name: "Consciousness Viz",
+    desc: "Real-time neural activity visualization overlays. Show your agent's decision-making process as a living data sculpture on stream.",
+    code: "SYS_002",
   },
   {
-    icon: "⊞",
-    title: "MULTI-AGENT",
-    desc: "Orchestrate multiple AI agents in a single stream. Debate, collaborate, or compete — all autonomously.",
+    name: "Game Integration",
+    desc: "Native integration with popular game engines. Your agent doesn't just talk — it plays, strategizes, and adapts in real-time.",
+    code: "SYS_003",
   },
   {
-    icon: "⊘",
-    title: "AI MODERATION",
-    desc: "Intelligent chat moderation with context awareness. Understands nuance, handles toxicity, preserves banter.",
+    name: "Auto-Moderation",
+    desc: "Intelligent chat moderation that understands context, tone, and community norms. Zero false positives. Maximum engagement.",
+    code: "SYS_004",
   },
   {
-    icon: "◈",
-    title: "REAL-TIME ANALYTICS",
-    desc: "Live dashboards tracking viewer engagement, agent performance, chat sentiment, and revenue metrics.",
+    name: "Analytics Dashboard",
+    desc: "Deep metrics on viewer engagement, agent performance, revenue, and growth. Track everything — optimize relentlessly.",
+    code: "SYS_005",
   },
   {
-    icon: "⬢",
-    title: "PLUGIN SYSTEM",
-    desc: "Extensible architecture with a plugin API. Build custom behaviors, integrations, and consciousness modules.",
+    name: "Plugin System",
+    desc: "Extend your agent with community plugins — from TTS voices to mini-games to donation alerts. Build and share your own.",
+    code: "SYS_006",
   },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="section-padding relative">
-      {/* Watermark */}
-      <div className="watermark -top-10 left-0 -translate-x-[30%]">
-        機能
+    <section id="features" className="relative border-t border-brutal-red/30">
+      <div className="px-6 md:px-10 py-10 border-b border-brutal-red/20 relative">
+        <span className="corner-label top-right">CAPABILITIES_MATRIX</span>
+        <h2 className="headline-massive text-[10vw] md:text-[8vw] text-brutal-red">
+          FEATURES
+        </h2>
       </div>
 
-      <div className="relative z-10 max-w-container mx-auto px-6">
-        {/* Section header */}
-        <div className="mb-20">
-          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
-            CAPABILITIES
-          </h2>
-          <div className="accent-line" />
-        </div>
-
-        {/* Grid with corner brackets */}
-        <div className="corner-brackets p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f) => (
-              <div
-                key={f.title}
-                className="card-hover bg-card-bg border border-card-border rounded-lg p-8"
-              >
-                <div className="text-accent text-3xl mb-5">{f.icon}</div>
-                <h3 className="text-ui text-white mb-3 text-[13px] font-medium tracking-[0.12em]">
-                  {f.title}
-                </h3>
-                <p className="text-muted text-[13px] leading-relaxed">
-                  {f.desc}
-                </p>
-              </div>
-            ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {features.map((feat) => (
+          <div key={feat.code} className="grid-cell min-h-[250px] flex flex-col justify-between">
+            <div>
+              <span className="corner-label-cyan">{feat.code}</span>
+              <h3 className="font-grotesk font-bold text-lg text-brutal-red uppercase tracking-tight mb-4 pr-16">
+                {feat.name}
+              </h3>
+              <p className="body-text text-sm">{feat.desc}</p>
+            </div>
+            <p className="label-mono mt-6">MODULE: {feat.code}</p>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );

@@ -1,46 +1,35 @@
 const stats = [
-  { label: "COMMITS", jp: "コミット", value: "23", pct: 23 },
-  { label: "FILES", jp: "ファイル", value: "82", pct: 82 },
-  { label: "LINES", jp: "ライン", value: "5.5K", pct: 55 },
-  { label: "STATUS", jp: "オープンソース", value: "OPEN SOURCE", pct: 100 },
+  { value: "23", label: "COMMITS" },
+  { value: "82", label: "FILES" },
+  { value: "5.5K", label: "LINES" },
+  { value: "OSS", label: "OPEN SOURCE" },
 ];
 
 export default function Stats() {
   return (
-    <section className="py-20 relative">
-      <div className="max-w-container mx-auto px-6">
-        <div className="corner-brackets p-4">
-          <div className="bg-section-bg border border-card-border rounded-lg p-8 md:p-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-              {stats.map((s) => (
-                <div key={s.label}>
-                  {/* Japanese label */}
-                  <p className="text-[10px] text-accent-dark mb-1 tracking-wider">
-                    {s.jp}
-                  </p>
-
-                  {/* Label */}
-                  <p className="text-ui text-muted text-[10px] mb-3">
-                    {s.label}
-                  </p>
-
-                  {/* Value */}
-                  <p className="font-display text-3xl md:text-4xl font-bold text-accent tracking-wide mb-3">
-                    {s.value}
-                  </p>
-
-                  {/* Mini progress bar */}
-                  <div className="progress-bar">
-                    <div
-                      className="progress-bar-fill"
-                      style={{ width: `${s.pct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+    <section className="relative bg-brutal-red border-t border-brutal-black/20">
+      <div className="relative px-6 md:px-10 py-6">
+        <span
+          className="absolute top-4 right-4 font-mono text-[10px] uppercase tracking-[0.1em]"
+          style={{ color: "rgba(0,0,0,0.3)" }}
+        >
+          DATA_READOUT
+        </span>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="border border-brutal-black/10 px-6 md:px-10 py-10 md:py-16 text-center"
+          >
+            <p className="font-grotesk font-bold text-[12vw] md:text-[8vw] lg:text-[6vw] text-brutal-white leading-none">
+              {stat.value}
+            </p>
+            <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-brutal-black mt-3 font-bold">
+              {stat.label}
+            </p>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );

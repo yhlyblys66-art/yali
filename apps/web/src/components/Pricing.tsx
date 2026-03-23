@@ -1,140 +1,142 @@
 const tiers = [
   {
-    name: "FREE",
+    name: "HOBBYIST",
     price: "$0",
-    period: "/forever",
+    period: "/FOREVER",
     features: [
-      "Single agent instance",
-      "One platform at a time",
-      "Basic chat moderation",
+      "1 agent",
+      "720p streaming",
+      "Basic chat responses",
       "Community support",
-      "Open source core",
+      "5hr / day limit",
     ],
-    cta: "GET STARTED",
     highlighted: false,
   },
   {
-    name: "STARTER",
-    price: "$149",
-    period: "/month",
+    name: "INDIE",
+    price: "$29",
+    period: "/MONTH",
     features: [
-      "Up to 3 agent instances",
-      "Multi-platform streaming",
-      "Advanced moderation",
-      "Analytics dashboard",
-      "Email support",
+      "3 agents",
+      "1080p streaming",
+      "Game integration",
+      "Analytics basic",
+      "24/7 streaming",
     ],
-    cta: "START TRIAL",
     highlighted: false,
   },
   {
     name: "PRO",
-    price: "$399",
-    period: "/month",
+    price: "$99",
+    period: "/MONTH",
     features: [
-      "Unlimited agents",
-      "All platforms",
-      "Consciousness visualization",
-      "Custom plugin support",
+      "10 agents",
+      "4K streaming",
+      "Consciousness viz",
+      "Full analytics",
       "Priority support",
-      "API access",
+      "Custom plugins",
     ],
-    cta: "GO PRO",
     highlighted: true,
   },
   {
-    name: "BUSINESS",
-    price: "$999",
-    period: "/month",
+    name: "ENTERPRISE",
+    price: "CUSTOM",
+    period: "",
     features: [
-      "Everything in Pro",
-      "Dedicated infrastructure",
-      "Custom AI training",
-      "White-label option",
+      "Unlimited agents",
+      "Multi-platform",
+      "White label",
+      "Dedicated infra",
       "SLA guarantee",
-      "24/7 support",
+      "On-call support",
     ],
-    cta: "CONTACT US",
     highlighted: false,
   },
 ];
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="section-padding relative">
-      {/* Watermark */}
-      <div className="watermark top-10 left-1/2 -translate-x-1/2">
-        価格
+    <section id="pricing" className="relative border-t border-brutal-red/30">
+      <div className="px-6 md:px-10 py-10 border-b border-brutal-red/20 relative">
+        <span className="corner-label top-right">TIER_MATRIX</span>
+        <h2 className="headline-massive text-[10vw] md:text-[8vw] text-brutal-red">
+          PRICING
+        </h2>
       </div>
 
-      <div className="relative z-10 max-w-container mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
-            SELECT YOUR TIER
-          </h2>
-          <div className="accent-line mx-auto" />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        {tiers.map((tier, i) => (
+          <div
+            key={tier.name}
+            className={`grid-cell min-h-[400px] flex flex-col justify-between ${
+              tier.highlighted
+                ? "bg-brutal-red text-brutal-white"
+                : "bg-brutal-black"
+            }`}
+          >
+            <div>
+              <span
+                className={`absolute top-3 right-3 font-mono text-[10px] uppercase tracking-[0.1em] ${
+                  tier.highlighted ? "text-brutal-white/40" : "text-brutal-cyan/50"
+                }`}
+              >
+                TIER_{String(i + 1).padStart(2, "0")}
+              </span>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tiers.map((t) => (
-            <div
-              key={t.name}
-              className={`
-                card-hover bg-card-bg border rounded-lg p-8 flex flex-col
-                ${
-                  t.highlighted
-                    ? "border-accent shadow-[0_0_30px_rgba(220,38,38,0.15)] relative -translate-y-2"
-                    : "border-card-border"
-                }
-              `}
-            >
-              {t.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="text-[10px] uppercase tracking-[0.15em] bg-accent text-white px-3 py-1 rounded-full">
-                    Popular
-                  </span>
-                </div>
+              <p
+                className={`font-grotesk font-bold text-sm uppercase tracking-[0.1em] mb-6 ${
+                  tier.highlighted ? "text-brutal-white/70" : "text-brutal-white/50"
+                }`}
+              >
+                {tier.name}
+              </p>
+
+              <p
+                className={`font-grotesk font-bold text-[10vw] md:text-[4vw] leading-none ${
+                  tier.highlighted ? "text-brutal-white" : "text-brutal-red"
+                }`}
+              >
+                {tier.price}
+              </p>
+              {tier.period && (
+                <p
+                  className={`font-mono text-[11px] uppercase tracking-[0.1em] mt-2 ${
+                    tier.highlighted ? "text-brutal-white/50" : "text-brutal-white/30"
+                  }`}
+                >
+                  {tier.period}
+                </p>
               )}
 
-              {/* Tier name */}
-              <p className="text-ui text-muted text-[11px] mb-6">{t.name}</p>
-
-              {/* Price */}
-              <div className="mb-8">
-                <span className="font-display text-5xl font-bold text-white">
-                  {t.price}
-                </span>
-                <span className="text-muted text-sm ml-1">{t.period}</span>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-10 flex-1">
-                {t.features.map((feat) => (
+              <ul className="mt-8 space-y-3">
+                {tier.features.map((feat) => (
                   <li
                     key={feat}
-                    className="flex items-start gap-2 text-[13px] text-muted"
+                    className={`font-mono text-[12px] tracking-[0.05em] ${
+                      tier.highlighted
+                        ? "text-brutal-white/80"
+                        : "text-brutal-white/50"
+                    }`}
                   >
-                    <span className="text-accent text-[10px] mt-[5px]">✦</span>
-                    {feat}
+                    → {feat}
                   </li>
                 ))}
               </ul>
-
-              {/* CTA */}
-              <button
-                className={
-                  t.highlighted
-                    ? "btn-filled w-full text-center"
-                    : "btn-outline w-full text-center"
-                }
-              >
-                {t.cta}
-              </button>
             </div>
-          ))}
-        </div>
+
+            <a
+              href="#"
+              className={`mt-8 block w-full text-center font-mono text-[12px] uppercase tracking-[0.15em] py-3 border transition-all duration-200 ${
+                tier.highlighted
+                  ? "border-brutal-white text-brutal-white hover:bg-brutal-white hover:text-brutal-red"
+                  : "border-brutal-red/50 text-brutal-red hover:bg-brutal-red hover:text-brutal-white"
+              }`}
+            >
+              {tier.name === "ENTERPRISE" ? "CONTACT" : "SELECT"}
+            </a>
+          </div>
+        ))}
       </div>
     </section>
   );

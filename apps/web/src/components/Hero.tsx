@@ -1,72 +1,98 @@
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Radial gradient glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(30, 58, 138, 0.15) 0%, transparent 70%)",
-        }}
-      />
+    <section className="relative min-h-screen pt-[60px] flex flex-col">
+      {/* Main content grid */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
+        {/* Left Column */}
+        <div className="grid-cell flex flex-col justify-center px-6 md:px-12 lg:px-16 py-16">
+          <span className="corner-label top-left">47.3769° N / 8.5417° E</span>
+          <span className="corner-label top-right">BLOCK: M-001</span>
 
-      {/* Japanese watermark */}
-      <div className="watermark top-1/2 right-0 -translate-y-1/2 translate-x-[10%]">
-        ストリーム
+          {/* Main headline */}
+          <h1 className="headline-massive text-[15vw] md:text-[12vw] lg:text-[10vw] leading-[0.85]">
+            <span className="text-brutal-red">MOLT</span>
+            <br />
+            <span className="headline-outlined">STREAM</span>
+          </h1>
+
+          {/* Sub-lines */}
+          <div className="mt-8 md:mt-12 space-y-1">
+            {["STREAM.", "DEPLOY.", "DOMINATE."].map((word) => (
+              <p
+                key={word}
+                className="font-grotesk font-bold text-brutal-red text-[5vw] md:text-[3.5vw] lg:text-[2.5vw] uppercase leading-tight tracking-tight"
+              >
+                {word}
+              </p>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-10 md:mt-14">
+            <a
+              href="#protocol"
+              className="inline-block font-mono text-sm uppercase tracking-[0.15em] text-brutal-white border border-brutal-red px-8 py-4 hover:bg-brutal-red hover:text-brutal-black transition-all duration-200"
+            >
+              &gt;_LAUNCH_AGENT
+            </a>
+          </div>
+
+          <span className="corner-label bottom-left">VERSION: 0.4.0</span>
+        </div>
+
+        {/* Right Column */}
+        <div className="grid-cell flex flex-col justify-center px-6 md:px-12 lg:px-10 py-16 border-t-2 border-t-brutal-red/60 lg:border-t-0 lg:border-l lg:border-l-brutal-red/30">
+          <span className="corner-label top-right">SYS_INIT</span>
+
+          <div className="border-t-2 border-brutal-red pt-8 max-w-md">
+            <p className="label-mono-red mb-4">{"// SYSTEM OVERVIEW"}</p>
+            <p className="body-text">
+              MoltStream is autonomous AI streaming infrastructure. Deploy
+              intelligent agents that stream on Kick, YouTube, and Twitch —
+              with real-time consciousness visualization, game integration,
+              and multi-agent orchestration.
+            </p>
+            <p className="body-text mt-4">
+              One command. Full autonomy. Your agent handles chat, gameplay,
+              overlays, and revenue — while you watch the metrics climb.
+            </p>
+          </div>
+
+          <div className="mt-12 flex gap-8">
+            <div>
+              <p className="font-grotesk font-bold text-2xl text-brutal-white">5min</p>
+              <p className="label-mono mt-1">DEPLOY TIME</p>
+            </div>
+            <div>
+              <p className="font-grotesk font-bold text-2xl text-brutal-white">24/7</p>
+              <p className="label-mono mt-1">UPTIME</p>
+            </div>
+            <div>
+              <p className="font-grotesk font-bold text-2xl text-brutal-white">∞</p>
+              <p className="label-mono mt-1">SCALABLE</p>
+            </div>
+          </div>
+
+          <span className="corner-label bottom-right">NODE: ACTIVE</span>
+        </div>
       </div>
 
-      {/* Sparkle crosses */}
-      <span className="sparkle top-[15%] left-[8%]" style={{ animationDelay: "0s" }}>✦</span>
-      <span className="sparkle top-[25%] right-[15%]" style={{ animationDelay: "1s" }}>✦</span>
-      <span className="sparkle bottom-[20%] left-[20%]" style={{ animationDelay: "2s" }}>✦</span>
-      <span className="sparkle top-[60%] right-[30%]" style={{ animationDelay: "0.5s" }}>✦</span>
-
-      <div className="relative z-10 max-w-container mx-auto px-6 pt-32 pb-20 w-full">
-        {/* Coordinates text */}
-        <p className="text-ui text-muted mb-8">
-          v0.4.0 / TypeScript / Open Source
-        </p>
-
-        {/* Main heading */}
-        <h1 className="font-display font-bold tracking-[0.08em] leading-[0.9] mb-8"
-          style={{ fontSize: "clamp(48px, 8vw, 100px)" }}
-        >
-          MOLTSTREAM
-        </h1>
-
-        {/* Subheading list */}
-        <div className="space-y-1 mb-10">
-          {["STREAMING.", "AUTONOMOUS.", "INTELLIGENT."].map((word) => (
-            <p
-              key={word}
-              className="font-display text-2xl md:text-4xl tracking-[0.15em] text-accent font-medium"
+      {/* Marquee Bar */}
+      <div className="marquee-wrapper py-3 border-t border-brutal-red/40 border-b border-b-brutal-red/40">
+        <div className="marquee-track">
+          {[0, 1].map((i) => (
+            <span
+              key={i}
+              className="font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-brutal-white whitespace-nowrap px-4"
             >
-              {word}
-            </p>
+              • AUTONOMOUS AI STREAMING INFRASTRUCTURE • DEPLOY YOUR AGENT IN
+              5 MINUTES • STREAM ON KICK / YOUTUBE / TWITCH • REAL-TIME
+              CONSCIOUSNESS VISUALIZATION • MULTI-AGENT ORCHESTRATION •
+              REVENUE ON AUTOPILOT • AUTONOMOUS AI STREAMING INFRASTRUCTURE •
+              DEPLOY YOUR AGENT IN 5 MINUTES • STREAM ON KICK / YOUTUBE /
+              TWITCH •&nbsp;
+            </span>
           ))}
-        </div>
-
-        {/* Body paragraph */}
-        <p className="max-w-xl text-muted text-sm leading-relaxed mb-12">
-          An autonomous AI streaming platform built in TypeScript. MoltStream
-          deploys intelligent agents that go live across Kick, YouTube, and
-          Twitch — managing chat, generating content, and visualizing
-          consciousness in real-time. No human operator required.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap gap-4">
-          <a href="#" className="btn-filled">
-            Launch Agent
-          </a>
-          <a href="#" className="btn-outline">
-            View Source →
-          </a>
-        </div>
-
-        {/* Thin red divider */}
-        <div className="mt-20">
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-40" />
         </div>
       </div>
     </section>
