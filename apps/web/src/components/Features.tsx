@@ -1,94 +1,71 @@
-"use client";
-
-import { useReveal } from "@/hooks/useReveal";
-
 const features = [
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
-        <path d="M2 12h20" />
-        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-      </svg>
-    ),
-    title: "Multi-Platform",
-    desc: "Simultaneously stream on Kick, YouTube, and Twitch from a single agent deployment.",
+    icon: "⬡",
+    title: "MULTI-PLATFORM",
+    desc: "Simultaneous streaming to Kick, YouTube, and Twitch from a single autonomous agent. One agent, all platforms.",
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-      </svg>
-    ),
-    title: "Real-Time Chat AI",
-    desc: "Your agent reads and responds to live chat with context-aware, personality-driven messages.",
+    icon: "◎",
+    title: "CONSCIOUSNESS VIZ",
+    desc: "Real-time browser-based visualization of the AI agent's internal state, decision flows, and emotional processing.",
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-        <line x1="8" y1="21" x2="16" y2="21" />
-        <line x1="12" y1="17" x2="12" y2="21" />
-      </svg>
-    ),
-    title: "Visual Scene Control",
-    desc: "Dynamic OBS scene switching, overlays, and alerts — all controlled by your AI agent.",
+    icon: "⊞",
+    title: "MULTI-AGENT",
+    desc: "Orchestrate multiple AI agents in a single stream. Debate, collaborate, or compete — all autonomously.",
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    title: "Auto-Moderation",
-    desc: "Built-in content filtering, ban management, and community safety — runs automatically.",
+    icon: "⊘",
+    title: "AI MODERATION",
+    desc: "Intelligent chat moderation with context awareness. Understands nuance, handles toxicity, preserves banter.",
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
-    title: "Analytics Dashboard",
-    desc: "Track engagement, viewer retention, chat sentiment, and revenue metrics in real time.",
+    icon: "◈",
+    title: "REAL-TIME ANALYTICS",
+    desc: "Live dashboards tracking viewer engagement, agent performance, chat sentiment, and revenue metrics.",
   },
   {
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-        <circle cx="8.5" cy="7" r="4" />
-        <polyline points="17 11 19 13 23 9" />
-      </svg>
-    ),
-    title: "Plugin Ecosystem",
-    desc: "Extend your agent with community plugins — games, TTS voices, donation alerts, and more.",
+    icon: "⬢",
+    title: "PLUGIN SYSTEM",
+    desc: "Extensible architecture with a plugin API. Build custom behaviors, integrations, and consciousness modules.",
   },
 ];
 
 export default function Features() {
-  const ref = useReveal();
-
   return (
-    <section id="features" className="py-20 md:py-24">
-      <div ref={ref} className="reveal max-w-container mx-auto px-6">
-        <div className="text-center mb-14">
-          <span className="pill inline-block mb-4">CAPABILITIES</span>
-          <h2 className="text-3xl md:text-4xl font-semibold">Features</h2>
+    <section id="features" className="section-padding relative">
+      {/* Watermark */}
+      <div className="watermark -top-10 left-0 -translate-x-[30%]">
+        機能
+      </div>
+
+      <div className="relative z-10 max-w-container mx-auto px-6">
+        {/* Section header */}
+        <div className="mb-20">
+          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
+            CAPABILITIES
+          </h2>
+          <div className="accent-line" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
-            <div key={f.title} className="card p-6">
+        {/* Grid with corner brackets */}
+        <div className="corner-brackets p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((f) => (
               <div
-                className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                style={{ background: "var(--color-tag-bg)" }}
+                key={f.title}
+                className="card-hover bg-card-bg border border-card-border rounded-lg p-8"
               >
-                {f.icon}
+                <div className="text-accent text-3xl mb-5">{f.icon}</div>
+                <h3 className="text-ui text-white mb-3 text-[13px] font-medium tracking-[0.12em]">
+                  {f.title}
+                </h3>
+                <p className="text-muted text-[13px] leading-relaxed">
+                  {f.desc}
+                </p>
               </div>
-              <h3 className="text-base font-semibold mb-2">{f.title}</h3>
-              <p className="text-sm opacity-60 leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -6,36 +6,42 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        paper: "var(--color-paper)",
-        ink: "var(--color-ink)",
-        "card-bg": "var(--color-card-bg)",
-        "card-border": "var(--color-card-border)",
-        muted: "var(--color-muted)",
-        "link-blue": "var(--color-link)",
-        "tag-bg": "var(--color-tag-bg)",
-        "ui-2": "var(--color-ui-2)",
-        "ui-3": "var(--color-ui-3)",
+        primary: "#0A0E1A",
+        "card-bg": "#111827",
+        "card-border": "#1E293B",
+        muted: "#6B7280",
+        accent: "#DC2626",
+        "accent-dark": "#991B1B",
+        "grid-line": "#1A2035",
+        "section-bg": "#0D1117",
       },
       fontFamily: {
-        mono: ["var(--font-mono)", '"IBM Plex Mono"', "monospace"],
-      },
-      borderRadius: {
-        card: "14px",
+        display: ['"Cormorant Garamond"', "Georgia", "serif"],
+        body: ['"Inter"', "system-ui", "sans-serif"],
       },
       maxWidth: {
         container: "1200px",
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease forwards",
+        "marquee": "marquee 20s linear infinite",
+        "sparkle": "sparkle 3s ease-in-out infinite",
+        "fade-in": "fadeIn 0.6s ease forwards",
       },
       keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        sparkle: {
+          "0%, 100%": { opacity: "0.3" },
+          "50%": { opacity: "1" },
+        },
         fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          "0%": { opacity: "0", transform: "translateY(12px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
     },

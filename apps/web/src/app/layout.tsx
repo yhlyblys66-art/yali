@@ -1,32 +1,10 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "MoltStream — AI-Powered Streaming Agents",
+  title: "MOLTSTREAM — Agent-Native Streaming Platform",
   description:
-    "Launch autonomous AI streamers on Kick, YouTube & Twitch. MoltStream provides the infrastructure to deploy, manage and monetize AI-driven live streams.",
-  openGraph: {
-    title: "MoltStream — AI-Powered Streaming Agents",
-    description:
-      "Launch autonomous AI streamers on Kick, YouTube & Twitch.",
-    type: "website",
-    url: "https://moltstream.com",
-    siteName: "MoltStream",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "MoltStream — AI-Powered Streaming Agents",
-    description:
-      "Launch autonomous AI streamers on Kick, YouTube & Twitch.",
-  },
+    "Autonomous AI-powered streaming infrastructure. Multi-platform. Intelligent. Open source.",
 };
 
 export default function RootLayout({
@@ -35,24 +13,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={ibmPlexMono.variable}>
+    <html lang="en">
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                  }
-                } catch(e) {}
-              })();
-            `,
-          }}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap"
+          rel="stylesheet"
         />
       </head>
-      <body className="font-mono antialiased">{children}</body>
+      <body className="bg-primary text-white font-body antialiased">
+        {children}
+      </body>
     </html>
   );
 }

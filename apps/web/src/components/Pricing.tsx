@@ -1,133 +1,133 @@
-"use client";
-
-import { useReveal } from "@/hooks/useReveal";
-
 const tiers = [
   {
-    name: "Free",
+    name: "FREE",
     price: "$0",
-    period: "forever",
+    period: "/forever",
     features: [
-      "1 AI agent",
-      "720p streaming",
-      "Basic chat responses",
+      "Single agent instance",
+      "One platform at a time",
+      "Basic chat moderation",
       "Community support",
-      "MoltStream branding",
+      "Open source core",
     ],
-    cta: "Get Started",
+    cta: "GET STARTED",
     highlighted: false,
   },
   {
-    name: "Starter",
+    name: "STARTER",
     price: "$149",
     period: "/month",
     features: [
-      "3 AI agents",
-      "1080p streaming",
-      "Custom personality",
-      "Basic analytics",
+      "Up to 3 agent instances",
+      "Multi-platform streaming",
+      "Advanced moderation",
+      "Analytics dashboard",
       "Email support",
     ],
-    cta: "Start Trial",
+    cta: "START TRIAL",
     highlighted: false,
   },
   {
-    name: "Pro",
+    name: "PRO",
     price: "$399",
     period: "/month",
     features: [
-      "10 AI agents",
-      "4K streaming",
-      "Multi-platform",
-      "Advanced analytics",
+      "Unlimited agents",
+      "All platforms",
+      "Consciousness visualization",
+      "Custom plugin support",
       "Priority support",
-      "Custom plugins",
+      "API access",
     ],
-    cta: "Go Pro",
+    cta: "GO PRO",
     highlighted: true,
   },
   {
-    name: "Business",
+    name: "BUSINESS",
     price: "$999",
     period: "/month",
     features: [
-      "Unlimited agents",
-      "4K + multi-stream",
-      "White-label",
-      "Dedicated manager",
+      "Everything in Pro",
+      "Dedicated infrastructure",
+      "Custom AI training",
+      "White-label option",
       "SLA guarantee",
-      "API access",
+      "24/7 support",
     ],
-    cta: "Contact Us",
+    cta: "CONTACT US",
     highlighted: false,
   },
 ];
 
 export default function Pricing() {
-  const ref = useReveal();
-
   return (
-    <section id="pricing" className="py-20 md:py-24">
-      <div ref={ref} className="reveal max-w-container mx-auto px-6">
-        <div className="text-center mb-14">
-          <span className="pill inline-block mb-4">PRICING</span>
-          <h2 className="text-3xl md:text-4xl font-semibold">Simple Pricing</h2>
+    <section id="pricing" className="section-padding relative">
+      {/* Watermark */}
+      <div className="watermark top-10 left-1/2 -translate-x-1/2">
+        価格
+      </div>
+
+      <div className="relative z-10 max-w-container mx-auto px-6">
+        {/* Header */}
+        <div className="text-center mb-20">
+          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
+            SELECT YOUR TIER
+          </h2>
+          <div className="accent-line mx-auto" />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {tiers.map((t) => (
             <div
               key={t.name}
-              className="card p-6 flex flex-col"
-              style={
-                t.highlighted
-                  ? {
-                      border: "2px solid transparent",
-                      backgroundImage: `linear-gradient(var(--color-card-bg), var(--color-card-bg)), var(--gradient-accent)`,
-                      backgroundOrigin: "border-box",
-                      backgroundClip: "padding-box, border-box",
-                    }
-                  : undefined
-              }
+              className={`
+                card-hover bg-card-bg border rounded-lg p-8 flex flex-col
+                ${
+                  t.highlighted
+                    ? "border-accent shadow-[0_0_30px_rgba(220,38,38,0.15)] relative -translate-y-2"
+                    : "border-card-border"
+                }
+              `}
             >
               {t.highlighted && (
-                <div className="pill text-center mb-4 text-xs">MOST POPULAR</div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="text-[10px] uppercase tracking-[0.15em] bg-accent text-white px-3 py-1 rounded-full">
+                    Popular
+                  </span>
+                </div>
               )}
-              <h3 className="text-lg font-semibold mb-1">{t.name}</h3>
-              <div className="mb-5">
-                <span className="text-3xl font-semibold">{t.price}</span>
-                <span className="text-sm opacity-50 ml-1">{t.period}</span>
+
+              {/* Tier name */}
+              <p className="text-ui text-muted text-[11px] mb-6">{t.name}</p>
+
+              {/* Price */}
+              <div className="mb-8">
+                <span className="font-display text-5xl font-bold text-white">
+                  {t.price}
+                </span>
+                <span className="text-muted text-sm ml-1">{t.period}</span>
               </div>
-              <ul className="flex-1 space-y-2.5 mb-6">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="mt-0.5 shrink-0 opacity-50"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span className="opacity-70">{f}</span>
+
+              {/* Features */}
+              <ul className="space-y-3 mb-10 flex-1">
+                {t.features.map((feat) => (
+                  <li
+                    key={feat}
+                    className="flex items-start gap-2 text-[13px] text-muted"
+                  >
+                    <span className="text-accent text-[10px] mt-[5px]">✦</span>
+                    {feat}
                   </li>
                 ))}
               </ul>
+
+              {/* CTA */}
               <button
-                className="w-full py-3 rounded-md text-sm font-medium transition-colors duration-120"
-                style={
+                className={
                   t.highlighted
-                    ? {
-                        background: "var(--color-ink)",
-                        color: "var(--color-paper)",
-                      }
-                    : {
-                        background: "var(--color-tag-bg)",
-                        color: "var(--color-ink)",
-                      }
+                    ? "btn-filled w-full text-center"
+                    : "btn-outline w-full text-center"
                 }
               >
                 {t.cta}

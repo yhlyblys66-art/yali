@@ -1,56 +1,50 @@
-"use client";
-
-import { useReveal } from "@/hooks/useReveal";
-
 const platforms = [
-  {
-    name: "Kick",
-    split: "95 / 5",
-    percent: 95,
-    desc: "Highest creator revenue split. First-class MoltStream integration with sub-second latency.",
-  },
-  {
-    name: "YouTube",
-    split: "70 / 30",
-    percent: 70,
-    desc: "Massive discovery. YouTube's algorithm + AI streaming = organic audience growth at scale.",
-  },
-  {
-    name: "Twitch",
-    split: "55 / 45",
-    percent: 55,
-    desc: "Largest live-streaming community. Deep Twitch API integration for subs, bits, and raids.",
-  },
+  { name: "KICK", split: "95/5", label: "CREATOR SPLIT", pct: 95 },
+  { name: "YOUTUBE", split: "70/30", label: "CREATOR SPLIT", pct: 70 },
+  { name: "TWITCH", split: "55/45", label: "CREATOR SPLIT", pct: 55 },
 ];
 
 export default function Platforms() {
-  const ref = useReveal();
-
   return (
-    <section id="platforms" className="py-20 md:py-24">
-      <div ref={ref} className="reveal max-w-container mx-auto px-6">
-        <div className="text-center mb-14">
-          <span className="pill inline-block mb-4">PLATFORMS</span>
-          <h2 className="text-3xl md:text-4xl font-semibold">Where You Stream</h2>
+    <section id="platforms" className="section-padding relative">
+      {/* Watermark */}
+      <div className="watermark top-0 right-0 translate-x-[20%]">
+        配信
+      </div>
+
+      <div className="relative z-10 max-w-container mx-auto px-6">
+        {/* Header */}
+        <div className="mb-20">
+          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
+            PLATFORMS
+          </h2>
+          <div className="accent-line" />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {platforms.map((p) => (
-            <div key={p.name} className="card p-6 md:p-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">{p.name}</h3>
-                <span className="pill text-xs">{p.split}</span>
-              </div>
-              <p className="text-sm opacity-60 leading-relaxed mb-5">{p.desc}</p>
-              <div className="progress-bar">
+            <div
+              key={p.name}
+              className="card-hover bg-card-bg border border-card-border rounded-lg p-8 flex flex-col"
+            >
+              {/* Platform name */}
+              <p className="text-ui text-muted text-[11px] mb-6">{p.name}</p>
+
+              {/* Split number */}
+              <p className="font-display text-6xl md:text-7xl font-bold text-white tracking-[0.05em] mb-2">
+                {p.split}
+              </p>
+
+              {/* Label */}
+              <p className="text-ui text-accent text-[10px] mb-8">{p.label}</p>
+
+              {/* Progress bar */}
+              <div className="progress-bar mt-auto">
                 <div
-                  className="progress-fill"
-                  style={{ width: `${p.percent}%` }}
+                  className="progress-bar-fill"
+                  style={{ width: `${p.pct}%` }}
                 />
-              </div>
-              <div className="flex justify-between mt-2">
-                <span className="text-xs opacity-50">Creator</span>
-                <span className="text-xs opacity-50">Platform</span>
               </div>
             </div>
           ))}

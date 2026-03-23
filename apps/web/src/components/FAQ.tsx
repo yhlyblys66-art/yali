@@ -1,72 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import { useReveal } from "@/hooks/useReveal";
 
 const faqs = [
   {
     q: "What is MoltStream?",
-    a: "MoltStream is an open-source platform that lets you deploy AI-powered autonomous streamers on Kick, YouTube, and Twitch. Your AI agent handles chat, scenes, moderation, and engagement — 24/7.",
+    a: "MoltStream is an autonomous AI streaming platform built in TypeScript. It deploys intelligent agents that go live on Kick, YouTube, and Twitch — handling chat, content generation, and consciousness visualization without a human operator.",
   },
   {
-    q: "Do I need coding experience?",
-    a: "No. The visual dashboard lets you configure everything without code. Power users can use YAML configs, custom plugins, and our API for advanced setups.",
-  },
-  {
-    q: "Which AI models are supported?",
-    a: "We support GPT-4o, Claude, Gemini, and open-source models via Ollama. Bring your own API key or use our hosted inference on Pro plans and above.",
-  },
-  {
-    q: "Can I run multiple agents simultaneously?",
-    a: "Yes — depending on your plan. Free supports 1 agent, Starter supports 3, Pro supports 10, and Business gives you unlimited agents across all platforms.",
+    q: "Which platforms are supported?",
+    a: "Currently MoltStream supports Kick, YouTube, and Twitch with simultaneous multi-platform streaming. Additional platform integrations are on the roadmap.",
   },
   {
     q: "Is MoltStream open source?",
-    a: "The core engine is open source under the MIT license. Premium features (multi-platform, analytics dashboard, custom plugins) are available on paid plans.",
+    a: "Yes. The core engine is fully open source under the MIT license. Premium features like advanced analytics and dedicated infrastructure are available through paid tiers.",
   },
   {
-    q: "What about platform Terms of Service?",
-    a: "MoltStream is designed to comply with each platform's ToS. AI streamers are labeled as AI-generated content. We provide built-in guardrails for content safety.",
+    q: "What is Consciousness Visualization?",
+    a: "It's a real-time browser-based rendering of the AI agent's internal state — decision trees, emotional processing, and attention flows — displayed as a visual overlay during streams.",
+  },
+  {
+    q: "Can I run multiple agents simultaneously?",
+    a: "Absolutely. The multi-agent system allows you to orchestrate multiple AI personalities in a single stream. They can debate, collaborate, or compete autonomously.",
+  },
+  {
+    q: "How does AI moderation work?",
+    a: "MoltStream's moderation engine uses context-aware natural language understanding to distinguish genuine toxicity from playful banter, maintaining healthy chat environments autonomously.",
   },
 ];
 
 export default function FAQ() {
-  const [open, setOpen] = useState<number | null>(null);
-  const ref = useReveal();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-20 md:py-24">
-      <div ref={ref} className="reveal max-w-container mx-auto px-6">
-        <div className="text-center mb-14">
-          <span className="pill inline-block mb-4">SUPPORT</span>
-          <h2 className="text-3xl md:text-4xl font-semibold">
-            Frequently Asked Questions
+    <section className="section-padding relative">
+      <div className="relative z-10 max-w-container mx-auto px-6">
+        {/* Header */}
+        <div className="mb-20">
+          <h2 className="font-display text-4xl md:text-6xl tracking-[0.1em] font-semibold mb-4">
+            FREQUENTLY ASKED
           </h2>
+          <div className="accent-line" />
         </div>
 
-        <div className="max-w-2xl mx-auto space-y-3">
-          {faqs.map((f, i) => (
-            <div
-              key={i}
-              className="card overflow-hidden"
-              style={{ cursor: "pointer" }}
-              onClick={() => setOpen(open === i ? null : i)}
-            >
-              <div className="flex items-center justify-between p-5">
-                <span className="text-sm font-semibold pr-4">{f.q}</span>
-                <span
-                  className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-lg leading-none transition-colors duration-120"
-                  style={{ background: "var(--color-tag-bg)" }}
-                >
-                  {open === i ? "−" : "+"}
+        {/* Items */}
+        <div className="max-w-3xl">
+          {faqs.map((faq, i) => (
+            <div key={i} className="faq-item">
+              <button
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                className="w-full flex items-center justify-between py-6 text-left group"
+              >
+                <span className="text-sm md:text-base font-body font-light text-white group-hover:text-accent transition-colors">
+                  {faq.q}
                 </span>
-              </div>
-              {open === i && (
-                <div
-                  className="px-5 pb-5 text-sm opacity-60 leading-relaxed"
-                  style={{ borderTop: "1px solid var(--color-card-border)" }}
-                >
-                  <div className="pt-4">{f.a}</div>
+                <span className="text-accent text-lg ml-4 flex-shrink-0 font-light">
+                  {openIndex === i ? "−" : "+"}
+                </span>
+              </button>
+              {openIndex === i && (
+                <div className="pb-6 pr-8">
+                  <p className="text-muted text-[13px] leading-relaxed">
+                    {faq.a}
+                  </p>
                 </div>
               )}
             </div>
