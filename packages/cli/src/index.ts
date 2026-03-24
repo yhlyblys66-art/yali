@@ -65,7 +65,8 @@ program
       );
 
       console.log('\n  --- API Keys ---\n');
-      const anthropicKey = await ask('Anthropic API key (for Claude)');
+      const llmProvider = await ask('LLM provider (gemini/anthropic)', 'gemini');
+      const llmKey = await ask(`${llmProvider === 'gemini' ? 'Gemini' : 'Anthropic'} API key`);
       const ttsProvider = await ask('TTS provider (fish/elevenlabs/openai)', 'fish');
       const ttsKey = await ask(`${ttsProvider} API key`);
 
@@ -87,9 +88,9 @@ platform:
   ${kickToken ? `authToken: "${kickToken}"` : '# authToken: "" (optional, for sending chat messages)'}
 
 llm:
-  provider: "anthropic"
-  apiKey: "${anthropicKey}"
-  model: "claude-sonnet-4-20250514"
+  provider: "${llmProvider}"
+  apiKey: "${llmKey}"
+  model: "${llmProvider === 'gemini' ? 'gemini-2.0-flash' : 'claude-sonnet-4-20250514'}"
   maxTokens: 200
 
 tts:
@@ -168,11 +169,12 @@ program
 
     const streamer = new MoltStreamer({
       channel: config.platform.channel,
-      anthropicApiKey: config.llm.apiKey,
+      llmProvider: (config.llm?.provider || 'gemini') as 'gemini' | 'anthropic',
+      apiKey: config.llm.apiKey,
       kickAuthToken: config.platform?.authToken,
       agentName: config.agent?.name ?? 'MoltBot',
       personality: config.agent?.personality ?? 'A friendly AI streamer',
-      model: config.llm?.model ?? 'claude-sonnet-4-20250514',
+      model: config.llm?.model ?? (config.llm?.provider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.0-flash'),
       maxTokens: Number(config.llm?.maxTokens ?? 200),
       cooldownSeconds: Number(config.stream?.cooldownSeconds ?? 5),
       respondEveryN: Number(config.stream?.respondEveryN ?? 1),

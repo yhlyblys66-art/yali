@@ -1,15 +1,14 @@
 /**
  * @moltstream/streamer
- * AI Streamer Agent — Day 1: Chat Bot with LLM
+ * AI Streamer Agent — Chat Bot with LLM
  *
- * Connects to Kick chat, processes messages through Claude,
+ * Connects to Kick chat, processes messages through LLM (Gemini or Claude),
  * and responds in character.
  */
 
 import { KickChat, type KickChatMessage } from '@moltstream/kick-chat';
 import { MoltTTS, type TTSConfig } from '@moltstream/tts';
 import { MoltAvatar } from '@moltstream/avatar';
-import Anthropic from '@anthropic-ai/sdk';
 import { EventEmitter } from 'events';
 
 export interface StreamerConfig {
@@ -19,8 +18,10 @@ export interface StreamerConfig {
   chatroomId?: number;
   /** Kick auth token for sending messages */
   kickAuthToken?: string;
-  /** Anthropic API key */
-  anthropicApiKey: string;
+  /** LLM provider */
+  llmProvider?: 'gemini' | 'anthropic';
+  /** LLM API key (Gemini or Anthropic) */
+  apiKey: string;
   /** Agent personality system prompt */
   personality: string;
   /** Agent name (displayed in logs) */
@@ -50,13 +51,12 @@ export interface StreamerConfig {
 }
 
 interface ConversationEntry {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'model';
   content: string;
 }
 
 export class MoltStreamer extends EventEmitter {
   private chat: KickChat;
-  private llm: Anthropic;
   private tts: MoltTTS | null = null;
   private avatar: MoltAvatar | null = null;
   private config: Required<StreamerConfig>;
@@ -71,10 +71,11 @@ export class MoltStreamer extends EventEmitter {
       channel: config.channel,
       chatroomId: config.chatroomId ?? 0,
       kickAuthToken: config.kickAuthToken ?? '',
-      anthropicApiKey: config.anthropicApiKey,
+      llmProvider: config.llmProvider ?? 'gemini',
+      apiKey: config.apiKey,
       personality: config.personality,
       agentName: config.agentName,
-      model: config.model ?? 'claude-sonnet-4-20250514',
+      model: config.model ?? (config.llmProvider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.0-flash'),
       maxTokens: config.maxTokens ?? 200,
       cooldownSeconds: config.cooldownSeconds ?? 3,
       minMessageLength: config.minMessageLength ?? 3,
@@ -114,10 +115,6 @@ export class MoltStreamer extends EventEmitter {
       authToken: this.config.kickAuthToken || undefined,
       reconnect: true,
     });
-
-    this.llm = new Anthropic({
-      apiKey: this.config.anthropicApiKey,
-    });
   }
 
   /** Start the streamer agent */
@@ -149,7 +146,7 @@ export class MoltStreamer extends EventEmitter {
     });
 
     console.log(`\n  🔴 Starting ${this.config.agentName}...`);
-    console.log(`  Model: ${this.config.model}`);
+    console.log(`  LLM: ${this.config.llmProvider} (${this.config.model})`);
     console.log(`  Cooldown: ${this.config.cooldownSeconds}s`);
     console.log(`  Respond every: ${this.config.respondEveryN} messages`);
     if (this.tts) console.log(`  TTS: ${this.config.tts.provider}`);
@@ -205,22 +202,18 @@ export class MoltStreamer extends EventEmitter {
     }
 
     try {
-      const response = await this.llm.messages.create({
-        model: this.config.model,
-        max_tokens: this.config.maxTokens,
-        system: this.config.personality,
-        messages: this.conversation,
-      });
+      let text: string;
 
-      const text = response.content
-        .filter((block): block is Anthropic.TextBlock => block.type === 'text')
-        .map((block) => block.text)
-        .join('');
+      if (this.config.llmProvider === 'gemini') {
+        text = await this.callGemini();
+      } else {
+        text = await this.callAnthropic();
+      }
 
       if (!text) return;
 
       // Add to conversation
-      this.conversation.push({ role: 'assistant', content: text });
+      this.conversation.push({ role: this.config.llmProvider === 'gemini' ? 'model' : 'assistant', content: text });
 
       console.log(`  🤖 ${this.config.agentName}: ${text}`);
 
@@ -249,16 +242,82 @@ export class MoltStreamer extends EventEmitter {
       console.error(`  ✗ LLM error:`, err.message);
     }
   }
+
+  private async callGemini(): Promise<string> {
+    const { fetch } = await import('undici');
+
+    const contents = this.conversation.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : msg.role,
+      parts: [{ text: msg.content }],
+    }));
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${this.config.model}:generateContent?key=${this.config.apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: this.config.personality }] },
+          contents,
+          generationConfig: {
+            maxOutputTokens: this.config.maxTokens,
+            temperature: 0.9,
+          },
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Gemini API error ${res.status}: ${err}`);
+    }
+
+    const data = await res.json() as any;
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  }
+
+  private async callAnthropic(): Promise<string> {
+    const { fetch } = await import('undici');
+
+    const messages = this.conversation.map((msg) => ({
+      role: msg.role === 'model' ? 'assistant' as const : msg.role as 'user' | 'assistant',
+      content: msg.content,
+    }));
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': this.config.apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        max_tokens: this.config.maxTokens,
+        system: this.config.personality,
+        messages,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Anthropic API error ${res.status}: ${err}`);
+    }
+
+    const data = await res.json() as any;
+    return data?.content?.[0]?.text ?? '';
+  }
 }
 
 // --- Standalone runner ---
 
 if (process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts')) {
   const channel = process.env.KICK_CHANNEL;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.LLM_API_KEY || process.env.GEMINI_API_KEY || process.env.ANTHROPIC_API_KEY;
+  const llmProvider = (process.env.LLM_PROVIDER || (process.env.GEMINI_API_KEY ? 'gemini' : 'anthropic')) as 'gemini' | 'anthropic';
 
   if (!channel || !apiKey) {
-    console.error('\n  Usage: KICK_CHANNEL=<slug> ANTHROPIC_API_KEY=<key> node dist/index.js\n');
+    console.error('\n  Usage: KICK_CHANNEL=<slug> GEMINI_API_KEY=<key> node dist/index.js\n');
     process.exit(1);
   }
 
@@ -273,7 +332,8 @@ if (process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts
 
   const streamer = new MoltStreamer({
     channel,
-    anthropicApiKey: apiKey,
+    llmProvider,
+    apiKey,
     kickAuthToken: process.env.KICK_AUTH_TOKEN,
     agentName: process.env.AGENT_NAME ?? 'MoltBot',
     personality: process.env.AGENT_PERSONALITY ?? `You are a friendly, witty AI streamer assistant. You interact with chat viewers in a fun and engaging way. Keep responses short (1-2 sentences), casual, and entertaining. You have a playful personality and love gaming, tech, and internet culture. Never break character.`,
