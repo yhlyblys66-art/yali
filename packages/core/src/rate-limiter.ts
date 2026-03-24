@@ -181,7 +181,7 @@ export class KeyedRateLimiter {
     return this.limiters.get(key)!.tryAcquire();
   }
 
-  status(key: string): ReturnType<RateLimiter['status']> | null {
+  status(key: string): RateLimiter['status'] | null {
     return this.limiters.get(key)?.status ?? null;
   }
 

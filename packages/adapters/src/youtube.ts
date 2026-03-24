@@ -142,7 +142,7 @@ export class YouTubeAdapter {
   toMoltEvent(msg: YouTubeChatMessage): MoltEvent {
     return {
       type: msg.superChatAmount ? 'superchat' : 'chat',
-      source: 'youtube',
+      source: 'platform',
       data: {
         user: msg.authorDisplayName,
         userId: msg.authorChannelId,
@@ -154,7 +154,7 @@ export class YouTubeAdapter {
           currency: msg.superChatCurrency,
         }),
       },
-      timestamp: new Date(msg.publishedAt).getTime(),
+      timestamp: new Date(msg.publishedAt).toISOString(),
     };
   }
 
