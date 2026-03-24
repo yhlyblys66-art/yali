@@ -87,7 +87,7 @@ export class MoltStreamer extends EventEmitter {
       apiKey: config.apiKey,
       personality: config.personality,
       agentName: config.agentName,
-      model: config.model ?? (config.llmProvider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.0-flash'),
+      model: config.model ?? (config.llmProvider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.5-flash'),
       maxTokens: config.maxTokens ?? 200,
       cooldownSeconds: config.cooldownSeconds ?? 3,
       minMessageLength: config.minMessageLength ?? 3,
@@ -232,6 +232,11 @@ export class MoltStreamer extends EventEmitter {
 
     console.log(`  💬 ${msg.sender.username}: ${msg.content}`);
 
+    // Send chat message to avatar overlay
+    if (this.avatar) {
+      this.avatar.showChat(msg.sender.username, msg.content);
+    }
+
     // Build conversation context
     this.conversation.push({
       role: 'user',
@@ -258,6 +263,11 @@ export class MoltStreamer extends EventEmitter {
       this.conversation.push({ role: this.config.llmProvider === 'gemini' ? 'model' : 'assistant', content: text });
 
       console.log(`  🤖 ${this.config.agentName}: ${text}`);
+
+      // Send response to avatar overlay
+      if (this.avatar) {
+        this.avatar.showResponse(text);
+      }
 
       // Generate speech if TTS is configured
       if (this.tts) {

@@ -98,6 +98,30 @@ export class MoltAvatar {
     }
   }
 
+  /** Send chat message to overlay */
+  showChat(username: string, message: string): void {
+    const msg = JSON.stringify({ type: 'chat', username, message });
+    for (const ws of this.clients) {
+      if (ws.readyState === WebSocket.OPEN) ws.send(msg);
+    }
+  }
+
+  /** Send bot response to overlay */
+  showResponse(text: string): void {
+    const msg = JSON.stringify({ type: 'response', text });
+    for (const ws of this.clients) {
+      if (ws.readyState === WebSocket.OPEN) ws.send(msg);
+    }
+  }
+
+  /** Send TTS audio (base64 encoded) to browser for playback */
+  playAudio(audioBase64: string, mimeType: string = 'audio/mp3'): void {
+    const msg = JSON.stringify({ type: 'audio', data: audioBase64, mime: mimeType });
+    for (const ws of this.clients) {
+      if (ws.readyState === WebSocket.OPEN) ws.send(msg);
+    }
+  }
+
   /** Trigger speaking animation (auto lip sync from duration) */
   async speak(durationMs: number): Promise<void> {
     const fps = 30;
@@ -126,19 +150,36 @@ export class MoltAvatar {
 <meta charset="utf-8">
 <title>MoltStream Avatar</title>
 <style>
-  * { margin: 0; padding: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: ${this.config.backgroundColor};
+    background: #0a0a0a;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: white;
+  }
+
+  /* --- Layout --- */
+  .stream-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+    gap: 0;
+  }
+
+  /* --- Avatar area (left) --- */
+  .avatar-area {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    background: radial-gradient(circle at 50% 40%, #1a1040 0%, #0a0a0a 70%);
   }
   #avatar {
-    width: 400px;
-    height: 600px;
+    width: 300px;
+    height: 450px;
     position: relative;
   }
   .avatar-body {
@@ -148,6 +189,7 @@ export class MoltAvatar {
     border-radius: 50% 50% 45% 45%;
     position: relative;
     animation: idle 3s ease-in-out infinite;
+    box-shadow: 0 0 60px rgba(99, 102, 241, 0.3);
   }
   .eyes {
     position: absolute;
@@ -200,44 +242,203 @@ export class MoltAvatar {
     0%, 45%, 55%, 100% { transform: scaleY(1); }
     50% { transform: scaleY(0.1); }
   }
-  .status {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    font-family: monospace;
+
+  /* --- Response bubble (below avatar) --- */
+  .response-area {
+    grid-column: 1;
+    padding: 16px 24px;
+    min-height: 80px;
+    max-height: 120px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.1) 100%);
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  .response-bubble {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #e0e7ff;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    max-height: 90px;
+    overflow: hidden;
+  }
+  .response-bubble.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .response-bubble .label {
     font-size: 11px;
+    font-weight: 700;
+    color: #818cf8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  /* --- Chat panel (right) --- */
+  .chat-panel {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    background: rgba(15, 15, 20, 0.95);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 700;
     color: rgba(255,255,255,0.5);
-    background: rgba(0,0,0,0.3);
-    padding: 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .chat-msg {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.3;
+    animation: chatIn 0.3s ease-out;
+    background: rgba(255,255,255,0.04);
+  }
+  .chat-msg .user {
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .chat-msg.viewer .user { color: #22c55e; }
+  .chat-msg.bot {
+    background: rgba(99, 102, 241, 0.12);
+    border-left: 3px solid #6366f1;
+  }
+  .chat-msg.bot .user { color: #818cf8; }
+  .chat-msg .text { color: rgba(255,255,255,0.85); }
+
+  @keyframes chatIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* --- LIVE badge --- */
+  .live-badge {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: #ef4444;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+    animation: livePulse 2s ease-in-out infinite;
+    z-index: 100;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* --- Agent name --- */
+  .agent-name {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 3px;
+    text-transform: uppercase;
   }
 </style>
 </head>
 <body>
-  <div id="avatar">
-    <div class="avatar-body">
-      <div class="eyes">
-        <div class="eye"></div>
-        <div class="eye"></div>
+  <div class="live-badge">● LIVE</div>
+
+  <div class="stream-layout">
+    <div class="avatar-area">
+      <div id="avatar">
+        <div class="avatar-body">
+          <div class="eyes">
+            <div class="eye"></div>
+            <div class="eye"></div>
+          </div>
+          <div class="mouth" id="mouth"></div>
+        </div>
+        <div class="agent-name">MoltBot</div>
       </div>
-      <div class="mouth" id="mouth"></div>
+    </div>
+
+    <div class="response-area">
+      <div class="response-bubble" id="response">
+        <div class="label">🤖 MoltBot</div>
+        <div class="response-text" id="responseText"></div>
+      </div>
+    </div>
+
+    <div class="chat-panel">
+      <div class="chat-header">💬 Live Chat</div>
+      <div class="chat-messages" id="chatMessages"></div>
     </div>
   </div>
-  <div class="status" id="status">connecting...</div>
 
   <script>
     const mouth = document.getElementById('mouth');
-    const status = document.getElementById('status');
+    const chatMessages = document.getElementById('chatMessages');
+    const responseBubble = document.getElementById('response');
+    const responseText = document.getElementById('responseText');
     let ws;
+    let responseTimeout;
+
+    function addChatMessage(username, message, isBot) {
+      const el = document.createElement('div');
+      el.className = 'chat-msg ' + (isBot ? 'bot' : 'viewer');
+      el.innerHTML = '<span class="user">' + escapeHtml(username) + '</span><span class="text">' + escapeHtml(message) + '</span>';
+      chatMessages.appendChild(el);
+      // Keep max 50 messages
+      while (chatMessages.children.length > 50) chatMessages.removeChild(chatMessages.firstChild);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showResponse(text) {
+      responseText.textContent = text;
+      responseBubble.classList.add('visible');
+      clearTimeout(responseTimeout);
+      responseTimeout = setTimeout(() => {
+        responseBubble.classList.remove('visible');
+      }, 15000);
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
 
     function connect() {
       ws = new WebSocket('ws://' + location.host);
 
-      ws.onopen = () => {
-        status.textContent = 'connected';
-      };
+      ws.onopen = () => {};
 
       ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
+
         if (data.type === 'mouth') {
           const v = data.value;
           if (v > 0.1) {
@@ -250,10 +451,23 @@ export class MoltAvatar {
             mouth.style.width = '30px';
           }
         }
+
+        if (data.type === 'chat') {
+          addChatMessage(data.username, data.message, false);
+        }
+
+        if (data.type === 'response') {
+          addChatMessage('MoltBot', data.text, true);
+          showResponse(data.text);
+        }
+
+        if (data.type === 'audio') {
+          const audio = new Audio('data:' + data.mime + ';base64,' + data.data);
+          audio.play().catch(() => {});
+        }
       };
 
       ws.onclose = () => {
-        status.textContent = 'disconnected';
         setTimeout(connect, 2000);
       };
     }

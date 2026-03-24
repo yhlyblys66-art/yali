@@ -97,7 +97,7 @@ platform:
 llm:
   provider: "${llmProvider}"
   apiKey: "${llmKey}"
-  model: "${llmProvider === 'gemini' ? 'gemini-2.0-flash' : 'claude-sonnet-4-20250514'}"
+  model: "${llmProvider === 'gemini' ? 'gemini-2.5-flash' : 'claude-sonnet-4-20250514'}"
   maxTokens: 200
 
 tts:
@@ -190,7 +190,7 @@ program
       kickAuthToken: config.platform?.authToken,
       agentName: config.agent?.name ?? 'MoltBot',
       personality: config.agent?.personality ?? 'A friendly AI streamer',
-      model: config.llm?.model ?? (config.llm?.provider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.0-flash'),
+      model: config.llm?.model ?? (config.llm?.provider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gemini-2.5-flash'),
       maxTokens: Number(config.llm?.maxTokens ?? 200),
       cooldownSeconds: Number(config.stream?.cooldownSeconds ?? 5),
       respondEveryN: Number(config.stream?.respondEveryN ?? 1),
