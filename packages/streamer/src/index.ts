@@ -7,7 +7,9 @@
  */
 
 import { KickChat, type KickChatMessage } from '@moltstream/kick-chat';
+import { MoltTTS, type TTSConfig } from '@moltstream/tts';
 import Anthropic from '@anthropic-ai/sdk';
+import { EventEmitter } from 'events';
 
 export interface StreamerConfig {
   /** Kick channel slug */
@@ -32,6 +34,12 @@ export interface StreamerConfig {
   minMessageLength?: number;
   /** Respond to every Nth message (1 = all, 3 = every 3rd) */
   respondEveryN?: number;
+  /** TTS configuration (optional — enables voice) */
+  tts?: {
+    provider: TTSConfig['provider'];
+    apiKey: string;
+    voice?: string;
+  };
 }
 
 interface ConversationEntry {
@@ -39,9 +47,10 @@ interface ConversationEntry {
   content: string;
 }
 
-export class MoltStreamer {
+export class MoltStreamer extends EventEmitter {
   private chat: KickChat;
   private llm: Anthropic;
+  private tts: MoltTTS | null = null;
   private config: Required<StreamerConfig>;
   private conversation: ConversationEntry[] = [];
   private lastResponseTime = 0;
@@ -49,6 +58,7 @@ export class MoltStreamer {
   private running = false;
 
   constructor(config: StreamerConfig) {
+    super();
     this.config = {
       channel: config.channel,
       chatroomId: config.chatroomId ?? 0,
@@ -61,7 +71,25 @@ export class MoltStreamer {
       cooldownSeconds: config.cooldownSeconds ?? 3,
       minMessageLength: config.minMessageLength ?? 3,
       respondEveryN: config.respondEveryN ?? 1,
+      tts: config.tts ?? { provider: 'fish', apiKey: '' },
     };
+
+    // Init TTS if configured
+    if (config.tts?.apiKey) {
+      this.tts = new MoltTTS({
+        provider: config.tts.provider,
+        apiKey: config.tts.apiKey,
+        voice: config.tts.voice,
+      });
+
+      this.tts.on('generating', (info: any) => {
+        console.log(`  🔊 Generating speech (${info.provider})...`);
+      });
+
+      this.tts.on('generated', (result: any) => {
+        console.log(`  🔊 Audio: ${result.filePath} (~${result.durationEstimate.toFixed(1)}s)`);
+      });
+    }
 
     this.chat = new KickChat({
       channel: this.config.channel,
@@ -170,6 +198,16 @@ export class MoltStreamer {
 
       console.log(`  🤖 ${this.config.agentName}: ${text}`);
 
+      // Generate speech if TTS is configured
+      if (this.tts) {
+        try {
+          const audio = await this.tts.speak(text);
+          this.emit('audio', audio);
+        } catch (ttsErr: any) {
+          console.error(`  ✗ TTS error:`, ttsErr.message);
+        }
+      }
+
       // Send to Kick chat
       if (this.config.kickAuthToken) {
         await this.chat.sendMessage(text);
@@ -193,6 +231,15 @@ if (process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts
     process.exit(1);
   }
 
+  // TTS config from env
+  const ttsProvider = process.env.TTS_PROVIDER as 'fish' | 'elevenlabs' | 'openai' | undefined;
+  const ttsApiKey = process.env.TTS_API_KEY;
+  const ttsConfig = ttsProvider && ttsApiKey ? {
+    provider: ttsProvider,
+    apiKey: ttsApiKey,
+    voice: process.env.TTS_VOICE,
+  } : undefined;
+
   const streamer = new MoltStreamer({
     channel,
     anthropicApiKey: apiKey,
@@ -201,6 +248,7 @@ if (process.argv[1]?.endsWith('index.js') || process.argv[1]?.endsWith('index.ts
     personality: process.env.AGENT_PERSONALITY ?? `You are a friendly, witty AI streamer assistant. You interact with chat viewers in a fun and engaging way. Keep responses short (1-2 sentences), casual, and entertaining. You have a playful personality and love gaming, tech, and internet culture. Never break character.`,
     cooldownSeconds: Number(process.env.COOLDOWN_SECONDS ?? '5'),
     respondEveryN: Number(process.env.RESPOND_EVERY_N ?? '1'),
+    tts: ttsConfig,
   });
 
   // Graceful shutdown

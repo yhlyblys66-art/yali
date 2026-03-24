@@ -137,6 +137,15 @@ importers:
       '@moltstream/kick-chat':
         specifier: workspace:*
         version: link:../kick-chat
+      '@moltstream/tts':
+        specifier: workspace:*
+        version: link:../tts
+
+  packages/tts:
+    dependencies:
+      undici:
+        specifier: ^7.0.0
+        version: 7.24.5
 
 packages:
 
