@@ -66,3 +66,10 @@ export {
   type PluginContext,
   type ChatMessage,
 } from './plugin.js';
+export {
+  ChatAnalytics,
+  type ChatterProfile,
+  type EngagementWindow,
+  type SessionSummary,
+  type AnalyticsConfig,
+} from './analytics.js';
